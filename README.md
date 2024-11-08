@@ -20,8 +20,8 @@ Labs Include
 **Lab 5: Dream Destination with CrewAI**
 - Explore how to use the CrewAI framework with Amazon Bedrock to build an intelligent agent that can find dream travel destinations based on user preferences. The agent will utilize a large language model (LLM) and web search capabilities to research and recommend destinations that match the user's description.
 
-**Lab 6: Evaluate Agents using RAGAS**
-- Evaluate the effectiveness and accuracy of our multi-agent travel booking system using the Retrieval-Augmented Generation Agent Scoring (RAGAS) framework. This lab will guide you through the process of evaluating agents' performance on various tasks, such as retrieving relevant information, generating accurate responses, and effectively handling user requests.
+**Lab 6: Evaluate Agents using ragas**
+- Evaluate the effectiveness and accuracy of our multi-agent travel booking system using the [ragas library](https://docs.ragas.io/en/stable/). This lab will guide you through the process of evaluating agents' performance on various tasks, such as retrieving relevant information, generating accurate responses, and effectively handling user requests.
 
 ## Security
 
