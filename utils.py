@@ -52,7 +52,7 @@ def convert_message_langchain_to_ragas(lc_message):
 
 def create_agent(enable_memory = False):
     # ---- ⚠️ Update region for your AWS setup ⚠️ ----
-    bedrock_client = boto3.client("bedrock-runtime", region_name="us-east-1")
+    bedrock_client = boto3.client("bedrock-runtime", region_name="us-west-2")
     
     
     
