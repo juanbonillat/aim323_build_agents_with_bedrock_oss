@@ -140,6 +140,7 @@ def create_agent(enable_memory = False):
         vectorstore=vector_db,
         docstore=store,
         child_splitter=child_splitter,
+        search_kwargs={"k":1}
     )    
     
     retriever_tool = create_retriever_tool(
