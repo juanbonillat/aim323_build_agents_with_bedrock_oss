@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "flight_agent": "./src/flight_agent/graph.py:graph",
+    "hotel_agent": "./src/hotel_agent/graph.py:graph",
+    "supervisor_agent": "./src/supervisor_agent/graph.py:graph",
+    "destination_agent": "./src/destination_agent/graph.py:graph"
+  },
+  "env": ".env"
+}
