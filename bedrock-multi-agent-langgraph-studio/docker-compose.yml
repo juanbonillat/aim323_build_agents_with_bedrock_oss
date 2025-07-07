@@ -3,7 +3,6 @@ version: '3.8'
 services:
   langgraph-agent:
     build: .
-    image: juanjbon/travel-agency
     environment:
       - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
