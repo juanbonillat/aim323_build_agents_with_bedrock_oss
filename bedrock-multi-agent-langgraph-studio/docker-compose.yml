@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  langgraph-agent:
+    build: .
+    image: juanjbon/travel-agency
+    environment:
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN
+    volumes:
+      - .:/app
+    ports:
+      - 2020:80
+      - 3030:3030
+      - 7860:7860
+    command: tail -f /dev/null
+                

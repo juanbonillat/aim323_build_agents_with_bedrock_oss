@@ -7,6 +7,7 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
+from os import environ
 
 from flight_agent.tools import (
     search_flights,
@@ -15,11 +16,11 @@ from flight_agent.tools import (
     cancel_flight_booking,
 )
 
-bedrock_client = boto3.client("bedrock-runtime", region_name="us-west-2")
+bedrock_client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 llm = ChatBedrockConverse(
-    # model="anthropic.claude-3-5-sonnet-20240620-v1:0",
-    model="anthropic.claude-3-sonnet-20240229-v1:0",
+    model="anthropic.claude-3-5-sonnet-20240620-v1:0",
+    #model="anthropic.claude-3-sonnet-20240229-v1:0",
     temperature=0,
     max_tokens=None,
     client=bedrock_client,
@@ -33,7 +34,7 @@ tools = [
 ]
 llm_with_tools = llm.bind_tools(tools)
 
-memory = MemorySaver()
+#memory = MemorySaver()
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -69,5 +70,11 @@ graph_builder.add_conditional_edges(
 graph_builder.add_edge("tools", "flight_agent")
 graph_builder.add_edge(START, "flight_agent")
 
-graph = graph_builder.compile(checkpointer=memory)
+#graph = graph_builder.compile(checkpointer=memory)
+
+if environ.get("env","") == "":
+    memory = MemorySaver()
+    graph = graph_builder.compile(checkpointer=memory)
+else:
+    graph = graph_builder.compile()
 graph.name = "FlightAgentGraph"

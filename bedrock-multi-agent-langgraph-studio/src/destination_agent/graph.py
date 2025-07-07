@@ -9,8 +9,9 @@ from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
 from destination_agent.tools import compare_and_recommend_destination
 from pydantic import BaseModel
+from os import environ
 
-bedrock_client = boto3.client("bedrock-runtime", region_name="us-west-2")
+bedrock_client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 llm = ChatBedrockConverse(
     model="anthropic.claude-3-5-sonnet-20240620-v1:0",
@@ -22,7 +23,6 @@ llm = ChatBedrockConverse(
 tools = [compare_and_recommend_destination]
 llm_with_tools = llm.bind_tools(tools)
 
-memory = MemorySaver()
 
 
 class location(BaseModel):
@@ -70,5 +70,9 @@ graph_builder.add_conditional_edges(
 graph_builder.add_edge("tools", "destination_agent")
 graph_builder.add_edge(START, "destination_agent")
 
-graph = graph_builder.compile(checkpointer=memory)
+if environ.get("env","") == "":
+    memory = MemorySaver()
+    graph = graph_builder.compile(checkpointer=memory)
+else:
+    graph = graph_builder.compile()
 graph.name = "PlannerGraph"

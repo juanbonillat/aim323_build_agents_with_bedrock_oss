@@ -5,6 +5,7 @@ description = "Multi agent sample with Amazon Bedrock and Langgraph"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "fastapi",
     "boto3>=1.35.87",
     "langchain-aws>=0.2.10",
     "langgraph-cli[inmem]>=0.1.65",

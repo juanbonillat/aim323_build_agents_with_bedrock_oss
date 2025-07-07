@@ -13,13 +13,14 @@ import functools
 from flight_agent import graph as flight_agent_graph
 from hotel_agent import graph as hotel_agent_graph
 from destination_agent import graph as destination_agent_graph
+from os import environ
 
 
 members = ["flight_agent", "hotel_agent", "destination_agent"]
 options = ["FINISH"] + members
-memory = MemorySaver()
+#memory = MemorySaver()
 
-bedrock_client = boto3.client("bedrock-runtime", region_name="us-west-2")
+bedrock_client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 llm = ChatBedrockConverse(
     model="anthropic.claude-3-5-sonnet-20240620-v1:0",
@@ -78,15 +79,37 @@ def supervisor_agent(state: State):
     print(f"Supervisor output: {output}")
     return output
 
+import pprint
 
 def agent_node(state, agent, name):
     result = agent.invoke(state)
-    print(result["messages"][-1].content[0]["text"])
+    pprint.pprint(result["messages"][-1].dict())
+
+    #print(result["messages"][-1].content[0]["text"])
     return {
         "messages": [
-            HumanMessage(content=result["messages"][-1].content[0]["text"], name=name)
+            #HumanMessage(content=result["messages"][-1].content[0]["text"], name=name)
+            HumanMessage(content=result["messages"][-1].content, name=name)
         ]
     }
+
+# def agent_node(state, agent, name):
+#     result = agent.invoke(state)
+
+#     # Get last message (should be AIMessage)
+#     last_msg = result["messages"][-1]
+#     content = last_msg.content
+
+#     # Make sure we're appending to history
+#     updated_messages = state["messages"] + [
+#         HumanMessage(content=content, name=name)
+#     ]
+
+#     return {
+#         "messages": updated_messages,
+#         "next": None
+#     }
+
 
 
 full_workflow = StateGraph(State, config_schema=RunnableConfig)
@@ -130,8 +153,20 @@ conditional_map = {k: k for k in members}
 conditional_map["FINISH"] = END
 full_workflow.add_conditional_edges("supervisor", lambda x: x["next"], conditional_map)
 
-graph = full_workflow.compile(
-    checkpointer=memory,
-)
+#graph = full_workflow.compile(
+#    checkpointer=memory,
+#)
+
+if environ.get("env","") == "":
+    memory = MemorySaver()
+    graph = full_workflow.compile(checkpointer=memory)
+else:
+    graph = full_workflow.compile()
 
 graph.name = "SupervisorAgentGraph"
+
+def run_supervisor_agent(input):
+    """Wrap graph invocation for Windmill"""
+    config = RunnableConfig(configurable={"thread_id": "local-test","configurable":{"user_id":918}})
+    result = graph.invoke(input,config=config)
+    return result

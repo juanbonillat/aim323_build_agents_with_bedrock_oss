@@ -15,20 +15,20 @@ from hotel_agent.tools import (
     change_hotel_booking,
     cancel_hotel_booking,
 )
+from os import environ
 
-
-bedrock_client = boto3.client("bedrock-runtime", region_name="us-west-2")
+bedrock_client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 llm = ChatBedrockConverse(
-    # model="anthropic.claude-3-5-sonnet-20240620-v1:0",
-    model="anthropic.claude-3-sonnet-20240229-v1:0",
+    model="anthropic.claude-3-5-sonnet-20240620-v1:0",
+    #model="anthropic.claude-3-sonnet-20240229-v1:0",
     temperature=0,
     max_tokens=None,
     client=bedrock_client,
     # other params...
 )
 
-memory = MemorySaver()
+#memory = MemorySaver()
 
 
 class State(TypedDict):
@@ -72,6 +72,12 @@ graph_builder.add_conditional_edges(
 graph_builder.add_edge("tools", "hotel_agent")
 graph_builder.add_edge(START, "hotel_agent")
 
-graph = graph_builder.compile(checkpointer=memory)
+#graph = graph_builder.compile(checkpointer=memory)
+
+if environ.get("env","") == "":
+    memory = MemorySaver()
+    graph = graph_builder.compile(checkpointer=memory)
+else:
+    graph = graph_builder.compile()
 
 graph.name = "HotelAgentGraph"

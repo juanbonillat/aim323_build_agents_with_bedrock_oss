@@ -8,7 +8,7 @@ from langchain_core.tools import tool
 from langchain_core.runnables import RunnableConfig
 
 
-def read_travel_data(file_path: str = "data/synthetic_travel_data.csv") -> pd.DataFrame:
+def read_travel_data(file_path: str = "/app/src/destination_agent/synthetic_travel_data.csv") -> pd.DataFrame:
     """Read travel data from CSV file"""
     try:
         df = pd.read_csv(file_path)
